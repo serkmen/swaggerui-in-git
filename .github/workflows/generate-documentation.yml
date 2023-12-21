@@ -1,6 +1,8 @@
 name: AsyncAPI documents processing
 
-on: push
+on:
+  push:
+    branches: [ master ]
 
 jobs:
   generate:
@@ -23,4 +25,12 @@ jobs:
         template: '@asyncapi/html-template@0.9.0'  #In case of template from npm, because of @ it must be in quotes
         filepath: docs/api/my-asyncapi.yml
         parameters: baseHref=/test-experiment/ sidebarOrganization=byTags #space separated list of key/values
-        output: docs/api/generated-html
+        output: generated-html
+        
+    #Using another action that takes generated HTML and pushes it to GH Pages
+    - name: Deploy GH page
+      uses: JamesIves/github-pages-deploy-action@3.4.2
+      with:
+        ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: asyncapi-integration
+        FOLDER: generated-html
