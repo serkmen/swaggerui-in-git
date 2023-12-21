@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - 'feature/asyncapi-integration'
+    workflow_dispatch:
 jobs:
   generate:
     runs-on: ubuntu-latest
