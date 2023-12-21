@@ -2,8 +2,8 @@ name: AsyncAPI documents processing
 
 on:
   push:
-    branches: [ master ]
-
+    branches:
+      - 'feature/swaggerui-integration'
 jobs:
   generate:
     runs-on: ubuntu-latest
