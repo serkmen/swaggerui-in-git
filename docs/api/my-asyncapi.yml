@@ -1,41 +1,43 @@
-asyncapi: 2.4.0
+asyncapi: 2.1.0
 info:
-  title: Streetlights App
-  version: '1.0.0'
-  description: |
-    The Smartylighting Streetlights application allows you
-    to remotely manage the city lights.
+  title: Order Service
+  version: 1.0.0
+  description: The service is in charge of processing orders
+  contact:
+    name: Daniel Kocot
+    email: daniel.kocot@codecentric.de
   license:
     name: Apache 2.0
-    url: 'https://www.apache.org/licenses/LICENSE-2.0'
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  mosquitto:
-    host: test.mosquitto.org
-    protocol: mqtt
+  rabbitmq:
+    url: localhost:5672
+    description: RabbitMQ
+    protocol: amqp
+    protocolVersion: '0.9.1'
 channels:
-  lightMeasured:
-    address: 'light/measured'
-    messages:
-      lightMeasuredMessage:
-        name: LightMeasured
-        payload:
-          type: object
-          properties:
-            id:
-              type: integer
-              minimum: 0
-              description: Id of the streetlight.
-            lumens:
-              type: integer
-              minimum: 0
-              description: Light intensity measured in lumens.
-            sentAt:
-              type: string
-              format: date-time
-              description: Date and time when the message was sent.
-operations:
-  onLightMeasured:
-    action: 'receive'
-    summary: Information about environmental lighting conditions for a particular streetlight.
-    channel:
-      $ref: '#/channels/lightMeasured'
+  order-received:
+    publish:
+      operationId: orderReceivedPub
+      description: Payload of received order
+      message:
+        $ref: '#/components/messages/order'
+      bindings:
+        amqp:
+          timestamp: true
+          ack: false
+          bindingVersion: 0.2.0
+    subscribe:
+      operationId: orderReceivedSub
+      description: Payload of received order
+      message:
+        $ref: '#/components/messages/order'
+    bindings:
+      amqp:
+        is: routingKey
+        exchange:
+          name: orderExchange
+          type: direct
+          durable: true
+          vhost: /
+        bindingVersion: 0.2.0
