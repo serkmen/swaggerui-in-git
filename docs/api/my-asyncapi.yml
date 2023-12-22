@@ -1,43 +1,50 @@
-asyncapi: 2.1.0
+asyncapi: 2.0.0
 info:
-  title: Order Service
-  version: 1.0.0
-  description: The service is in charge of processing orders
-  contact:
-    name: Daniel Kocot
-    email: daniel.kocot@codecentric.de
+  title: Account Service
+  version: '1.0.0'
+  description: |
+    Manages user accounts in the system.
   license:
     name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0.html
+    url: https://www.apache.org/licenses/LICENSE-2.0
+
 servers:
-  rabbitmq:
-    url: localhost:5672
-    description: RabbitMQ
-    protocol: amqp
-    protocolVersion: '0.9.1'
+  production:
+    url: mqtt://test.mosquitto.org
+    protocol: mqtt
+    description: Test MQTT broker
+
 channels:
-  order-received:
-    publish:
-      operationId: orderReceivedPub
-      description: Payload of received order
-      message:
-        $ref: '#/components/messages/order'
-      bindings:
-        amqp:
-          timestamp: true
-          ack: false
-          bindingVersion: 0.2.0
+  user/signedup:
     subscribe:
-      operationId: orderReceivedSub
-      description: Payload of received order
+      operationId: emitUserSignUpEvent
       message:
-        $ref: '#/components/messages/order'
-    bindings:
-      amqp:
-        is: routingKey
-        exchange:
-          name: orderExchange
-          type: direct
-          durable: true
-          vhost: /
-        bindingVersion: 0.2.0
+        $ref : '#/components/messages/UserSignedUp'
+
+components:
+  messages:
+    UserSignedUp:
+      name: userSignedUp
+      title: User signed up event
+      summary: Inform about a new user registration in the system
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/userSignedUpPayload'
+
+  schemas:
+    userSignedUpPayload:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: "foo"
+        lastName:
+          type: string
+          description: "bar"
+        email:
+          type: string
+          format: email
+          description: "baz"
+        createdAt:
+          type: string
+          format: date-time  
