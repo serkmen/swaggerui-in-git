@@ -1,9 +1,7 @@
 name: AsyncAPI documents processing
 
-on:
-  push:
-    branches:
-      - 'feature/asyncapi-integration'
+on: push
+
 jobs:
   generate:
     runs-on: ubuntu-latest
