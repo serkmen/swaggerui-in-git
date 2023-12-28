@@ -26,7 +26,7 @@ jobs:
       run: |
         docker run --rm \
           -v ${{ github.workspace }}:/app \
-          asyncapi/html-template \
+          asyncapi/html-template:2.3.0 \
           -o /app/output.html \
           /docs/api/my-asyncapi.yml
     
