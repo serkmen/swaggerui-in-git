@@ -9,7 +9,7 @@ permissions: read-all
 
 jobs:
   generate:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
     #"standard step" where repo needs to be checked-out first
     - name: Checkout repo
