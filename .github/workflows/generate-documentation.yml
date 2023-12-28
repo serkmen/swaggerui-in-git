@@ -14,6 +14,8 @@ jobs:
     #"standard step" where repo needs to be checked-out first
     - name: Checkout repo
       uses: actions/checkout@v2
+    - name: Login to DockerHub
+      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       
     #Using another action for AsyncAPI for validation
     - name: Validating AsyncAPI document
@@ -21,12 +23,6 @@ jobs:
       with:
         filepath: docs/api/my-asyncapi.yml
 
-    - name: Docker Login
-      run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      
     #In case you do not want to use defaults, you for example want to use different template
     - name: Generating HTML from my AsyncAPI document
       run: |
