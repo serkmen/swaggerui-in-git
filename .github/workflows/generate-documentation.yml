@@ -5,7 +5,7 @@ on:
     branches:
       - feature/aysncapi-integration
 
-permissions: read-all
+permissions: write-all
 
 jobs:
   generate:
