@@ -1,6 +1,10 @@
 name: AsyncAPI documents processing
 
-on: push
+on:
+  push:
+    branches:
+      - feature/aysncapi-integration
+
 permissions:
   contents: write
 jobs:
@@ -19,17 +23,16 @@ jobs:
       
     #In case you do not want to use defaults, you for example want to use different template
     - name: Generating HTML from my AsyncAPI document
-      uses: docker://asyncapi/github-action-for-generator:latest  #always use latest tag as each is pushed to docker
-      with:
-        template: '@asyncapi/html-template@2.0.0'  #In case of template from npm, because of @ it must be in quotes
-        filepath: docs/api/my-asyncapi.yml
-        parameters: baseHref=/test-experiment/ sidebarOrganization=byTags #space separated list of key/values
-        output: generated-html
-        
+      run: |
+        docker run --rm \
+          -v ${{ github.workspace }}:/app \
+          asyncapi/html-template \
+          -o /app/output.html \
+          /docs/api/my-asyncapi.yml
+    
     #Using another action that takes generated HTML and pushes it to GH Pages
     - name: Deploy GH page
-      uses: JamesIves/github-pages-deploy-action@4.0.0
+      uses: actions/upload-artifact@v2
       with:
-        ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BRANCH: feature/asyncapi-integration
-        FOLDER: generated-html
+        name: asyncapi-html
+        path: output.html
