@@ -20,17 +20,9 @@ jobs:
       uses: docker://asyncapi/github-action-for-generator:2.1.25
       with:
         template: '@asyncapi/html-template@1.0.0'
-        filepath: docs/api/my-asyncapi.yml
+        filepath: docs/api/asyncapi.yml
         parameters: pdf=true baseHref=/test-experiment/ sidebarOrganization=byTags #space separated list of key/values
         output: generated-html
 
     - name: Checking if stuff are available outside container
       run: echo "===" && ls && echo "===" && ls generated-html && echo "==="
-      
-    #Using another action that takes generated HTML and pushes it to GH Pages
-    - name: Deploy GH page
-      uses: JamesIves/github-pages-deploy-action@3.4.2
-      with:
-        ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BRANCH: gh-pages
-        FOLDER: generated-html
